@@ -37,6 +37,8 @@ namespace MJ198.Player
             if (!_lastShot.Try(_settings.ShootTime)) return;
             Bullet b = GameObject.Instantiate(_bulletPrefab, _shootLocation.position, _head.rotation).GetComponent<Bullet>();
             b.Velocity = _settings.BulletVelocity;
+            b.LifeSpan = _settings.BulletLifeSpan;
+            b.Damage = _settings.BulletDamage;
         }
     }
 }

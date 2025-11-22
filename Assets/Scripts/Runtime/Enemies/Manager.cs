@@ -1,11 +1,14 @@
 using PlazmaGames.Attribute;
 using System.Threading;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace MJ198.Enemy
 {
     public class Manager : MonoBehaviour
     {
+        public UnityEvent OnDeath => _healthTaker.OnDeath;
+        
         [SerializeField] private EnemySettings _settings;
         [SerializeField] private HealthTaker _healthTaker;
 
@@ -13,7 +16,9 @@ namespace MJ198.Enemy
 
         private TimedTrigger _lastShot = new();
 
-        private void OnDeath()
+        public void SetPlayer(Player.Controller player) => _player = player;
+
+        private void HandleOnDeath()
         {
             _player.GetComponent<Player.Manager>().AddScore(_settings.Score);
             Destroy(gameObject);
@@ -22,7 +27,7 @@ namespace MJ198.Enemy
         private void Awake()
         {
             if (!_healthTaker) _healthTaker = GetComponent<HealthTaker>();
-            _healthTaker.OnDeath.AddListener(OnDeath);
+            _healthTaker.OnDeath.AddListener(HandleOnDeath);
         }
 
         private void Update()

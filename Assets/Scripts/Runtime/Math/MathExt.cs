@@ -110,6 +110,11 @@ namespace MJ198.Math
         }
 
         public static float AngleAs180(float angle) => Mathf.Repeat(angle + 180, 360) - 180;
+
+        public static Vector3 Mul(this Vector3 a, Vector3 b)
+        {
+            return new Vector3(a.x * b.x, a.y * b.y, a.z * b.z);
+        }
         
         public static Vector3 AngleAs180(this Vector3 ea)
         {

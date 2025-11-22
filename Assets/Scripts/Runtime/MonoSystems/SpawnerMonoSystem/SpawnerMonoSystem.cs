@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using MJ198.Math;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace MJ198.MonoSystems
 {
@@ -8,22 +9,28 @@ namespace MJ198.MonoSystems
     {
         [SerializeField] private float _enemyRadiusWhenSpawning = 0.5f;
         [SerializeField] private float _maxEnemiesAtOnce = 15;
+        [SerializeField] private float _startSpawnTime = 5;
 
-        private List<GameObject> _enemies = new();
+        private List<Enemy.Manager> _enemies = new();
 
         private GameObject _enemyPrefab;
         
         private Bounds _spawnBounds;
             
-        private TimedTrigger _spawnTrigger;
+        private TimedTrigger _spawnTrigger = new();
         private float _currentSpawnTime;
+
+        private Player.Controller _player;
         
-        
-        
-        private void Awake()
+        private void Start()
         {
-            _spawnBounds = GameObject.FindWithTag("SpawnBounds").GetComponent<BoxCollider>().bounds;
+            _currentSpawnTime = _startSpawnTime;
+            BoxCollider bc = GameObject.FindWithTag("SpawnBounds").GetComponent<BoxCollider>();
+            _spawnBounds = new Bounds(
+                bc.transform.position,
+                bc.size.Mul(bc.transform.lossyScale));
             _enemyPrefab = Resources.Load<GameObject>("Prefabs/Enemy");
+            _player = GameObject.FindWithTag("Pllayer").GetComponent<Player.Controller>();
         }
 
         private void Update()
@@ -35,9 +42,16 @@ namespace MJ198.MonoSystems
         {
             if (_enemies.Count >= _maxEnemiesAtOnce) return;
             if (TryGetSpawnLocation() is not {} pos) return;
-            GameObject e = GameObject.Instantiate(_enemyPrefab, pos, Quaternion.identity);
+            Enemy.Manager e = GameObject.Instantiate(_enemyPrefab, pos, Quaternion.identity).GetComponent<Enemy.Manager>();
+            e.SetPlayer(_player);
+            UnityAction handle = null;
+            handle = () =>
+            {
+                _enemies.Remove(e);
+                e.OnDeath.RemoveListener(handle);
+            };
+            e.OnDeath.AddListener(handle);
             _enemies.Add(e);
-            Quaternion.Look
         }
 
         Vector3? TryGetSpawnLocation()

@@ -411,6 +411,52 @@ MonoBehaviour:
   _views: []
   _currentView: {fileID: 0}
   _hasInitialized: 0
+--- !u!1 &5215087305374199133
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 480102812403911998}
+  - component: {fileID: 6883858865238222091}
+  m_Layer: 0
+  m_Name: Spawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &480102812403911998
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5215087305374199133}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8511679641120905398}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6883858865238222091
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5215087305374199133}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1a15af1e90670e61857f33b0f0b1500, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MJ198.MonoSystems.SpawnerMonoSystem
+  _enemyRadiusWhenSpawning: 1
+  _maxEnemiesAtOnce: 8
 --- !u!1 &5976171741833081302
 GameObject:
   m_ObjectHideFlags: 0
@@ -459,36 +505,6 @@ MonoBehaviour:
   hexTilePrefab: {fileID: 7802700192306267662, guid: 67bd84c3e9282b945b9ff3e208a0ac6d, type: 3}
   gridRadius: 20
   hexSize: 1
-  colorGradient:
-    serializedVersion: 2
-    key0: {r: 0.3207547, g: 0.3207547, b: 0.3207547, a: 1}
-    key1: {r: 0, g: 0, b: 0, a: 1}
-    key2: {r: 0, g: 0, b: 0, a: 0}
-    key3: {r: 0, g: 0, b: 0, a: 0}
-    key4: {r: 0, g: 0, b: 0, a: 0}
-    key5: {r: 0, g: 0, b: 0, a: 0}
-    key6: {r: 0, g: 0, b: 0, a: 0}
-    key7: {r: 0, g: 0, b: 0, a: 0}
-    ctime0: 0
-    ctime1: 65535
-    ctime2: 0
-    ctime3: 0
-    ctime4: 0
-    ctime5: 0
-    ctime6: 0
-    ctime7: 0
-    atime0: 0
-    atime1: 65535
-    atime2: 0
-    atime3: 0
-    atime4: 0
-    atime5: 0
-    atime6: 0
-    atime7: 0
-    m_Mode: 0
-    m_ColorSpace: -1
-    m_NumColorKeys: 2
-    m_NumAlphaKeys: 2
 --- !u!1 &6270617075290585661
 GameObject:
   m_ObjectHideFlags: 0
@@ -728,6 +744,7 @@ Transform:
   - {fileID: 4966256641152708869}
   - {fileID: 2387323060657596578}
   - {fileID: 6442254277262438649}
+  - {fileID: 480102812403911998}
   m_Father: {fileID: 8510715297181773209}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7909999038678172287
@@ -783,4 +800,5 @@ MonoBehaviour:
   _audioSystem: {fileID: 4788815687990391097}
   _inputSystem: {fileID: 3520517266428231756}
   _gridSystem: {fileID: 6369282835301917498}
+  _spawnerSystem: {fileID: 6883858865238222091}
   _preferences: {fileID: 11400000, guid: 52efc93440e70cf4181a7490a39c8eb4, type: 2}

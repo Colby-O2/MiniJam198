@@ -66,4 +66,4 @@ MonoBehaviour:
   SlideTiltAngle: -5
   TiltSpeed: 5
   ShootTime: 0.2
-  BulletVelocity: 0.7
+  BulletVelocity: 55

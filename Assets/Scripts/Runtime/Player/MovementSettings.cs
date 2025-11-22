@@ -75,5 +75,7 @@ namespace MJ198.Player
         [Header("Gun")]
         public float ShootTime = 0.2f;
         public float BulletVelocity = 2.0f;
+        public float BulletLifeSpan = 10.0f;
+        public float BulletDamage = 10.0f;
     }
 }

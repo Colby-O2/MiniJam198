@@ -6,6 +6,7 @@ TagManager:
   tags:
   - MusicSource
   - Pllayer
+  - SpawnBounds
   layers:
   - Default
   - TransparentFX
