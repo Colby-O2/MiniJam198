@@ -17,7 +17,8 @@ namespace MJ198.Player
             Grounded,
             Airborne,
             Sliding,
-            WallRunning
+            WallRunning,
+            Grappling
         }
 
         [SerializeField, ReadOnly] private PlayerState _state = PlayerState.Airborne;
@@ -48,6 +49,14 @@ namespace MJ198.Player
         [Header("WallJump")]
         [SerializeField, ReadOnly] private float _wallJumpCooldown;
 
+        [Header("Grapple")]
+        [SerializeField, ReadOnly] private bool _isGrappling;
+        [SerializeField, ReadOnly] private Vector3 _grapplePoint;
+
+        [Header("Grapple Visuals")]
+        [SerializeField] private LineRenderer _grappleLine;
+        [SerializeField] private Transform _grappleOrigin;
+
         private IInputMonoSystem _input;
         private bool _jumpRequested;
 
@@ -64,18 +73,26 @@ namespace MJ198.Player
         private void Awake()
         {
             _input = GameManager.GetMonoSystem<IInputMonoSystem>();
+
+            if (_grappleLine != null)
+            {
+                _grappleLine.positionCount = 2;
+                _grappleLine.enabled = false;
+            }
         }
 
         private void OnEnable()
         {
             _input.JumpAction.AddListener(RequestJump);
             _input.SlideAction.AddListener(StartSlide);
+            _input.GrappleAction.AddListener(StartGrapple);
         }
 
         private void OnDisable()
         {
             _input.JumpAction.RemoveListener(RequestJump);
             _input.SlideAction.RemoveListener(StartSlide);
+            _input.GrappleAction.RemoveListener(StartGrapple);
         }
 
         private void Update()
@@ -100,9 +117,14 @@ namespace MJ198.Player
             UpdateMovement();
             ApplyGravity();
             MoveController();
+            UpdateGrappleLine();
         }
 
-        private void RequestJump() => _jumpRequested = true;
+        private void RequestJump()
+        {
+            _jumpRequested = true;
+            if (_isGrappling) StopGrapple();
+        }
 
         private void HandleJump()
         {
@@ -122,8 +144,15 @@ namespace MJ198.Player
 
         private void UpdatePlayerState()
         {
+            if (_isGrappling)
+            {
+                _state = PlayerState.Grappling;
+                return;
+            }
+
             if (_input.SlideHeld && !_startedSlide && !CantSlide()) StartSlide();
-            else if (_state != PlayerState.WallRunning && _state != PlayerState.Sliding) _state = _controller.isGrounded ? PlayerState.Grounded : PlayerState.Airborne;
+            else if (_state != PlayerState.WallRunning && _state != PlayerState.Sliding)
+                _state = _controller.isGrounded ? PlayerState.Grounded : PlayerState.Airborne;
         }
 
         private void UpdateMovement()
@@ -134,6 +163,7 @@ namespace MJ198.Player
                 case PlayerState.WallRunning: UpdateWallRunning(); break;
                 case PlayerState.Grounded: UpdateGrounded(); break;
                 case PlayerState.Airborne: UpdateAirborne(); break;
+                case PlayerState.Grappling: UpdateGrappling(); break;
             }
         }
 
@@ -167,7 +197,7 @@ namespace MJ198.Player
             _velocity.x = _horizontalVelocity.x;
             _velocity.z = _horizontalVelocity.y;
 
-            if (_wallJumpCooldown <= 0 && HasForwardInput && CheckForWall(out var normal) && ValidWallRunAngle(normal))
+            if (_wallRunCooldown <= 0 && HasForwardInput && CheckForWall(out var normal) && ValidWallRunAngle(normal))
                 StartWallRun(normal);
         }
 
@@ -196,9 +226,45 @@ namespace MJ198.Player
             _velocity.z = _wallForward.z * Speed * _settings.WallRunSpeedMul;
         }
 
+        private void UpdateGrappling()
+        {
+            if (!_isGrappling)
+            {
+                _state = _controller.isGrounded ? PlayerState.Grounded : PlayerState.Airborne;
+                return;
+            }
+            else if (_wallRunCooldown <= 0 && HasForwardInput && CheckForWall(out var normal) && ValidWallRunAngle(normal))
+            {
+                StopGrapple();
+                StartWallRun(normal);
+                return;
+            }
+            else if (!_input.GrappleHeld)
+            {
+                StopGrapple();
+                _state = _controller.isGrounded ? PlayerState.Grounded : PlayerState.Airborne;
+                return;
+            }
+
+            Vector3 toPoint = _grapplePoint - transform.position;
+            float dist = toPoint.magnitude;
+            if (dist <= _settings.GrappleMinDetachDistance)
+            {
+                _isGrappling = false;
+                _velocity += transform.forward * _settings.GrappleExitBoost;
+                _state = PlayerState.Airborne;
+                return;
+            }
+
+            Vector3 dir = toPoint.normalized;
+            _velocity += dir * _settings.GrapplePullAcceleration * Time.deltaTime;
+            float mag = _velocity.magnitude;
+            if (mag > _settings.GrappleMaxSpeed) _velocity = _velocity.normalized * _settings.GrappleMaxSpeed;
+        }
+
         private void ApplyGravity()
         {
-            if (_state != PlayerState.WallRunning)
+            if (_state != PlayerState.WallRunning && !_isGrappling)
                 _velocity.y = Mathf.MoveTowards(_velocity.y, -50f, -Gravity * Time.deltaTime);
             if (_controller.isGrounded && _state == PlayerState.Grounded && _velocity.y < 0f)
                 _velocity.y = -4f;
@@ -245,7 +311,7 @@ namespace MJ198.Player
             _wallNormal = normal;
             _wallRunTimer = _settings.WallRunDuration;
             _velocity.y = 0f;
-            _wallForward =Vector3.Cross(_wallNormal, Vector3.up);
+            _wallForward = Vector3.Cross(_wallNormal, Vector3.up);
             if (Vector3.Dot(_wallForward, transform.forward) < 0) _wallForward = -_wallForward;
         }
 
@@ -257,10 +323,10 @@ namespace MJ198.Player
             if (hits.Length > 0)
             {
                 Collider hit = hits[0];
-                normal =  (transform.position - hit.ClosestPoint(transform.position)).normalized;
+                normal = (transform.position - hit.ClosestPoint(transform.position)).normalized;
                 return true;
             }
- 
+
             return false;
         }
 
@@ -268,6 +334,41 @@ namespace MJ198.Player
         {
             Vector3 f = Vector3.Cross(normal, Vector3.up);
             return Mathf.Abs(Vector3.Dot(f, transform.forward)) > 0.2f;
+        }
+
+        private void StartGrapple()
+        {
+            if (_isGrappling) return;
+
+            Transform cam = Camera.main.transform;
+            if (Physics.Raycast(cam.position, cam.forward, out var hit, _settings.GrappleRange, _settings.GrappleLayerMask))
+            {
+                _isGrappling = true;
+                _grapplePoint = hit.point;
+                _state = PlayerState.Grappling;
+            }
+        }
+
+        private void UpdateGrappleLine()
+        {
+            if (_grappleLine == null) return;
+
+            if (_isGrappling)
+            {
+                _grappleLine.enabled = true;
+                _grappleLine.SetPosition(0, _grappleOrigin.position); 
+                _grappleLine.SetPosition(1, _grapplePoint);           
+            }
+            else
+            {
+                _grappleLine.enabled = false;
+            }
+        }
+
+        private void StopGrapple()
+        {
+            _isGrappling = false;
+            _state = _controller.isGrounded ? PlayerState.Grounded : PlayerState.Airborne;
         }
     }
 }

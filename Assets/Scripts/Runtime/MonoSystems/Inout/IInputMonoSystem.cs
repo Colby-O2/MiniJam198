@@ -9,9 +9,11 @@ namespace MJ198.MonoSystems
         public UnityEvent JumpAction { get; }
         public UnityEvent SprintAction { get; }
         public UnityEvent SlideAction { get; }
+        public UnityEvent GrappleAction { get; }
 
         public bool SprintHeld { get; set; }
         public bool SlideHeld { get; set; }
+        public bool GrappleHeld { get; set; }
         public Vector2 RawMovement { get; }
         public Vector2 RawLook { get; }
     }

@@ -17,13 +17,16 @@ namespace MJ198.MonoSystems
         private InputAction _jumpAction;
         private InputAction _sprintAction;
         private InputAction _slideAction;
+        private InputAction _grappleAction;
 
         public UnityEvent JumpAction { get; private set; }
         public UnityEvent SprintAction { get; private set; }
         public UnityEvent SlideAction { get; private set; }
+        public UnityEvent GrappleAction { get; private set; }
 
         public bool SprintHeld { get; set; }
         public bool SlideHeld { get; set; }
+        public bool GrappleHeld { get; set; }
         public Vector2 RawMovement { get; private set; }
         public Vector2 RawLook { get; private set; }
 
@@ -64,6 +67,17 @@ namespace MJ198.MonoSystems
             SlideHeld = false;
         }
 
+        private void HandleGrappleAction(InputAction.CallbackContext e)
+        {
+            GrappleHeld = true;
+            GrappleAction.Invoke();
+        }
+
+        private void HandleGrappleCanceledAction(InputAction.CallbackContext e)
+        {
+            GrappleHeld = false;
+        }
+
         private void Awake()
         {
             if (!_input) _input = GetComponent<PlayerInput>();
@@ -71,6 +85,7 @@ namespace MJ198.MonoSystems
             JumpAction           = new UnityEvent();
             SprintAction         = new UnityEvent();
             SlideAction          = new UnityEvent();
+            GrappleAction        = new UnityEvent();
 
 
             _moveAction          = _input.actions["Move"];
@@ -78,6 +93,7 @@ namespace MJ198.MonoSystems
             _jumpAction          = _input.actions["Jump"];
             _sprintAction        = _input.actions["Sprint"];
             _slideAction         = _input.actions["Slide"];
+            _grappleAction       = _input.actions["Grapple"];
 
             _moveAction.performed       += HandleMoveAction;
             _lookAction.performed       += HandleLookAction;
@@ -86,6 +102,8 @@ namespace MJ198.MonoSystems
             _sprintAction.canceled      += HandleSprintCanceledAction;
             _slideAction.performed      += HandleSlideAction;
             _slideAction.canceled       += HandleSlideCanceledAction;
+            _grappleAction.performed    += HandleGrappleAction;
+            _grappleAction.canceled     += HandleGrappleCanceledAction;
         }
 
         private void OnDestroy()
@@ -93,6 +111,12 @@ namespace MJ198.MonoSystems
             _moveAction.performed       -= HandleMoveAction;
             _lookAction.performed       -= HandleLookAction;
             _jumpAction.performed       -= HandleJumpAction;
+            _sprintAction.performed     -= HandleSprintAction;
+            _sprintAction.canceled      -= HandleSprintCanceledAction;
+            _slideAction.performed      -= HandleSlideAction;
+            _slideAction.canceled       -= HandleSlideCanceledAction;
+            _grappleAction.performed    -= HandleGrappleAction;
+            _grappleAction.canceled     -= HandleGrappleCanceledAction;
         }
     }
 }

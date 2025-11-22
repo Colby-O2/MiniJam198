@@ -38,6 +38,13 @@ namespace MJ198.Player
         public float WallRunningCooldownTime = 0.2f;
         public float WallDetectionDistance = 1f;
 
+        [Header("Grapple")]
+        public float GrappleRange = 40f;
+        public LayerMask GrappleLayerMask;
+        public float GrappleMinDetachDistance = 3f;
+        public float GrappleExitBoost = 18f;
+        public float GrapplePullAcceleration = 110f;
+        public float GrappleMaxSpeed = 35f;
 
         [Header("Wall Jump")]
         public float WallJumpForwardBoost = 3f;
