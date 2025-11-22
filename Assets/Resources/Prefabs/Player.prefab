@@ -13,11 +13,12 @@ GameObject:
   - component: {fileID: 7010812211704612447}
   - component: {fileID: 3975661518758110414}
   - component: {fileID: 7381805276349595494}
+  - component: {fileID: 2103762062949986049}
   - component: {fileID: 399415873776313589}
   - component: {fileID: 1696788635284863262}
   m_Layer: 6
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Pllayer
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -139,6 +140,20 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2103762062949986049
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2748989465789962725}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ede2c3f2b99648946a1e68e22189e122, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _settings: {fileID: 11400000, guid: 07dffca2c8158d64b8a42225fa45874e, type: 2}
+  _controller: {fileID: 0}
 --- !u!114 &399415873776313589
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -163,6 +178,7 @@ MonoBehaviour:
   _inputMove: {x: 0, y: 0}
   _slideRunCooldown: 0
   _slideDirection: {x: 0, y: 0, z: 0}
+  _wallRunDirectionSign: 0
   _wallRunCooldown: 0
   _wallNormal: {x: 0, y: 0, z: 0}
   _wallRunTimer: 0
