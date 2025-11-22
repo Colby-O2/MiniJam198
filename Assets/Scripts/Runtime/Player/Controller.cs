@@ -28,7 +28,10 @@ namespace MJ198.Player
 
         [Header("Flags")]
         [SerializeField, ReadOnly] private bool _isSprinting;
+        [SerializeField, ReadOnly] private bool _isGrappling;
+        [SerializeField, ReadOnly] private bool _startedSlide;
         [SerializeField, ReadOnly] private bool _justWallJumped;
+        [SerializeField, ReadOnly] private bool _jumpRequested;
 
         [Header("Movement")]
         [SerializeField, ReadOnly] private Vector3 _velocity;
@@ -37,7 +40,6 @@ namespace MJ198.Player
 
         [Header("Slide")]
         [SerializeField, ReadOnly] private float _slideRunCooldown;
-        [SerializeField, ReadOnly] private bool _startedSlide;
         [SerializeField, ReadOnly] private Vector3 _slideDirection;
 
         [Header("WallRun")]
@@ -50,7 +52,6 @@ namespace MJ198.Player
         [SerializeField, ReadOnly] private float _wallJumpCooldown;
 
         [Header("Grapple")]
-        [SerializeField, ReadOnly] private bool _isGrappling;
         [SerializeField, ReadOnly] private Vector3 _grapplePoint;
 
         [Header("Grapple Visuals")]
@@ -58,7 +59,6 @@ namespace MJ198.Player
         [SerializeField] private Transform _grappleOrigin;
 
         private IInputMonoSystem _input;
-        private bool _jumpRequested;
 
         public bool IsSliding() => _state == PlayerState.Sliding;
         public bool CantSlide() => _state != PlayerState.Grounded || !_isSprinting || IsSliding() || _slideRunCooldown >= 0f;
