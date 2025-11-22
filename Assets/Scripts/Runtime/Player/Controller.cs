@@ -34,6 +34,7 @@ namespace MJ198.Player
         [SerializeField, ReadOnly] private bool _jumpRequested;
 
         [Header("Movement")]
+        [SerializeField, ReadOnly] private float _timeOffGround;
         [SerializeField, ReadOnly] private Vector3 _velocity;
         [SerializeField, ReadOnly] private Vector2 _inputMove;
         private Vector2 _horizontalVelocity;
@@ -63,6 +64,7 @@ namespace MJ198.Player
 
         public bool IsSliding() => _state == PlayerState.Sliding;
         public bool CantSlide() => _state != PlayerState.Grounded || !_isSprinting || IsSliding() || _slideRunCooldown >= 0f;
+        public float GetTimeOffGround() => _timeOffGround;
 
         public PlayerState State => _state;
         public Vector3 CurrentWallNormal => _wallNormal;
@@ -70,6 +72,14 @@ namespace MJ198.Player
         private float Gravity => GRAVITY * _settings.GravityMul;
         private float Speed => (_isSprinting ? _settings.RunningMul : 1f) * _settings.Speed;
         private bool HasForwardInput => _inputMove.y > 0.1f;
+
+        private Vector3 _lastPos;
+        [SerializeField, ReadOnly] private Vector3 _vel;
+
+        public Vector3 GetVelocity()
+        {
+            return _vel;
+        }
 
         private void Awake()
         {
@@ -102,6 +112,9 @@ namespace MJ198.Player
             _wallRunCooldown -= Time.deltaTime;
             _slideRunCooldown -= Time.deltaTime;
 
+            if (!_controller.isGrounded) _timeOffGround += Time.deltaTime;
+            else _timeOffGround = 0;
+
             if (_startedSlide && !_input.SlideHeld) _startedSlide = false;
             if (_wallJumpCooldown <= 0f) _justWallJumped = false;
 
@@ -119,6 +132,12 @@ namespace MJ198.Player
             ApplyGravity();
             MoveController();
             UpdateGrappleLine();
+        }
+
+        private void LateUpdate()
+        {
+            _vel = (transform.position - _lastPos) / Time.deltaTime;
+            _lastPos = transform.position;
         }
 
         private void RequestJump()
