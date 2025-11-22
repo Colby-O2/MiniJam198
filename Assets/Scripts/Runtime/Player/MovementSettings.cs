@@ -48,6 +48,7 @@ namespace MJ198.Player
         public float GrappleExitBoost = 18f;
         public float GrapplePullAcceleration = 110f;
         public float GrappleMaxSpeed = 35f;
+        public float GrappleSphereCastRadius = 0.5f;
 
         [Header("Wall Jump")]
         public float WallJumpForwardBoost = 3f;
@@ -71,5 +72,8 @@ namespace MJ198.Player
         public float SlideTiltAngle = 15f;
         public float TiltSpeed = 8f;
 
+        [Header("Gun")]
+        public float ShootTime = 0.2f;
+        public float BulletVelocity = 2.0f;
     }
 }
