@@ -138,6 +138,14 @@ namespace MJ198.Player
             if (_controller.isGrounded || _state == PlayerState.Sliding)
             {
                 _velocity.y = Mathf.Sqrt(_settings.JumpPower * -3f * Gravity);
+                if (_state == PlayerState.Sliding)
+                {
+                    _horizontalVelocity = new Vector2(_slideDirection.x, _slideDirection.z);
+                }
+                else
+                {
+                    _horizontalVelocity = new Vector2(_velocity.x, _velocity.z);
+                }
                 _state = PlayerState.Airborne;
                 _slideDirection = Vector3.zero;
             }
@@ -241,6 +249,7 @@ namespace MJ198.Player
             if (!_isGrappling)
             {
                 _state = _controller.isGrounded ? PlayerState.Grounded : PlayerState.Airborne;
+                _horizontalVelocity = new Vector2(_velocity.x, _velocity.z);
                 return;
             }
             else if (_wallRunCooldown <= 0 && HasForwardInput && CheckForWall(out var normal) && ValidWallRunAngle(normal))
@@ -370,7 +379,8 @@ namespace MJ198.Player
             if (_isGrappling) return;
 
             Transform cam = Camera.main.transform;
-            if (Physics.Raycast(cam.position, cam.forward, out var hit, _settings.GrappleRange, _settings.GrappleLayerMask))
+            if (Physics.Raycast(cam.position, cam.forward, out var hit, _settings.GrappleRange, _settings.GrappleLayerMask) ||
+                Physics.SphereCast(new Ray(cam.position, cam.forward), _settings.GrappleSphereCastRadius, out hit, _settings.GrappleRange, _settings.GrappleLayerMask))
             {
                 _isGrappling = true;
                 _grapplePoint = hit.point;
@@ -398,6 +408,7 @@ namespace MJ198.Player
         {
             _isGrappling = false;
             _state = _controller.isGrounded ? PlayerState.Grounded : PlayerState.Airborne;
+            _horizontalVelocity = new Vector2(_velocity.x, _velocity.z);
         }
     }
 }

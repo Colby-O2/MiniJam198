@@ -6,6 +6,7 @@ namespace MJ198.MonoSystems
 {
     public interface IInputMonoSystem : IMonoSystem
     {
+        public UnityEvent ShootAction { get; }
         public UnityEvent JumpAction { get; }
         public UnityEvent SprintAction { get; }
         public UnityEvent SlideAction { get; }

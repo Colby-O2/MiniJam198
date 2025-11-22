@@ -48,8 +48,9 @@ MonoBehaviour:
     m_Bits: 128
   GrappleMinDetachDistance: 3
   GrappleExitBoost: 0
-  GrapplePullAcceleration: 110
+  GrapplePullAcceleration: 70
   GrappleMaxSpeed: 100
+  GrappleSphereCastRadius: 2
   WallJumpForwardBoost: 15
   WallJumpUpForce: 20
   WallJumpSideForce: 5
@@ -64,3 +65,5 @@ MonoBehaviour:
   WallRunTiltAngle: 20
   SlideTiltAngle: -5
   TiltSpeed: 5
+  ShootTime: 0.2
+  BulletVelocity: 0.7

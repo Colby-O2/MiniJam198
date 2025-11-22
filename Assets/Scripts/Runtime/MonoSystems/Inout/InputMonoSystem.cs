@@ -13,6 +13,7 @@ namespace MJ198.MonoSystems
         private IUIMonoSystem _ui;
 
         private InputAction _moveAction;
+        private InputAction _shootAction;
         private InputAction _lookAction;
         private InputAction _jumpAction;
         private InputAction _sprintAction;
@@ -20,6 +21,7 @@ namespace MJ198.MonoSystems
         private InputAction _grappleAction;
 
         public UnityEvent JumpAction { get; private set; }
+        public UnityEvent ShootAction { get; private set; }
         public UnityEvent SprintAction { get; private set; }
         public UnityEvent SlideAction { get; private set; }
         public UnityEvent GrappleAction { get; private set; }
@@ -33,6 +35,11 @@ namespace MJ198.MonoSystems
         private void HandleMoveAction(InputAction.CallbackContext e)
         {
             RawMovement = e.ReadValue<Vector2>();
+        }
+        
+        private void HandleShootAction(InputAction.CallbackContext e)
+        {
+            ShootAction.Invoke();
         }
 
         private void HandleLookAction(InputAction.CallbackContext e)
@@ -83,12 +90,14 @@ namespace MJ198.MonoSystems
             if (!_input) _input = GetComponent<PlayerInput>();
 
             JumpAction           = new UnityEvent();
+            ShootAction           = new UnityEvent();
             SprintAction         = new UnityEvent();
             SlideAction          = new UnityEvent();
             GrappleAction        = new UnityEvent();
 
 
             _moveAction          = _input.actions["Move"];
+            _shootAction          = _input.actions["Shoot"];
             _lookAction          = _input.actions["Look"];
             _jumpAction          = _input.actions["Jump"];
             _sprintAction        = _input.actions["Sprint"];
@@ -96,6 +105,7 @@ namespace MJ198.MonoSystems
             _grappleAction       = _input.actions["Grapple"];
 
             _moveAction.performed       += HandleMoveAction;
+            _shootAction.performed      += HandleShootAction;
             _lookAction.performed       += HandleLookAction;
             _jumpAction.performed       += HandleJumpAction;
             _sprintAction.performed     += HandleSprintAction;
