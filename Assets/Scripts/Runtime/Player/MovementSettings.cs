@@ -24,6 +24,7 @@ namespace MJ198.Player
         public float SlideSpeedMul = 3f;
         public float SlideFriction = 8f;
         public float SlideMinSpeed = 1.1f;
+        public float SlideCooldownTime = 0.2f;
         public float SlideHeadDrop = -0.4f;      
         public float SlideHeadForward = 0.25f;   
         public float SlideHeadSpeed = 9f;        

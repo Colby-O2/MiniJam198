@@ -25,7 +25,8 @@ MonoBehaviour:
   GravityMul: 5
   SlideSpeedMul: 4
   SlideFriction: 1
-  SlideDuration: 0.25
+  SlideMinSpeed: 10
+  SlideCooldownTime: 0.5
   SlideHeadDrop: -0.8
   SlideHeadForward: 0.25
   SlideHeadSpeed: 9

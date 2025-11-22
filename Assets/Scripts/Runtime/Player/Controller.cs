@@ -35,6 +35,8 @@ namespace MJ198.Player
         private Vector2 _horizontalVelocity;
 
         [Header("Slide")]
+        [SerializeField, ReadOnly] private float _slideRunCooldown;
+        [SerializeField, ReadOnly] private bool _startedSlide;
         [SerializeField, ReadOnly] private Vector3 _slideDirection;
 
         [Header("WallRun")]
@@ -50,7 +52,7 @@ namespace MJ198.Player
         private bool _jumpRequested;
 
         public bool IsSliding() => _state == PlayerState.Sliding;
-        public bool CantSlide() => _state != PlayerState.Grounded || !_isSprinting || IsSliding();
+        public bool CantSlide() => _state != PlayerState.Grounded || !_isSprinting || IsSliding() || _slideRunCooldown >= 0f;
 
         public PlayerState State => _state;
         public Vector3 CurrentWallNormal => _wallNormal;
@@ -80,7 +82,11 @@ namespace MJ198.Player
         {
             _wallJumpCooldown -= Time.deltaTime;
             _wallRunCooldown -= Time.deltaTime;
+            _slideRunCooldown -= Time.deltaTime;
+
+            if (_startedSlide && !_input.SlideHeld) _startedSlide = false;
             if (_wallJumpCooldown <= 0f) _justWallJumped = false;
+
             _inputMove = Vector2.ClampMagnitude(_input.RawMovement, 1f);
             _isSprinting = _input.SprintHeld;
 
@@ -116,7 +122,8 @@ namespace MJ198.Player
 
         private void UpdatePlayerState()
         {
-            if (_state != PlayerState.WallRunning && _state != PlayerState.Sliding) _state = _controller.isGrounded ? PlayerState.Grounded : PlayerState.Airborne;
+            if (_input.SlideHeld && !_startedSlide && !CantSlide()) StartSlide();
+            else if (_state != PlayerState.WallRunning && _state != PlayerState.Sliding) _state = _controller.isGrounded ? PlayerState.Grounded : PlayerState.Airborne;
         }
 
         private void UpdateMovement()
@@ -169,6 +176,7 @@ namespace MJ198.Player
             _slideDirection *= 1f / (1f + _settings.SlideFriction * Time.deltaTime);
             if (!_input.SlideHeld || _slideDirection.magnitude < _settings.SlideMinSpeed || !_controller.isGrounded)
             {
+                _slideRunCooldown = _settings.SlideCooldownTime;
                 _state = _controller.isGrounded ? PlayerState.Grounded : PlayerState.Airborne;
                 _slideDirection = Vector3.zero;
             }
@@ -205,6 +213,7 @@ namespace MJ198.Player
         private void StartSlide()
         {
             if (CantSlide()) return;
+            _startedSlide = true;
             _state = PlayerState.Sliding;
             Vector3 forward = transform.forward;
             forward.y = 0f;
