@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8d238ace5f49f44c8d57b1d60be36d4, type: 3}
+  m_Name: DefaultMovementSettings
+  m_EditorClassIdentifier: Assembly-CSharp::MJ198.Player.MovementSettings
+  Sensitivity: 0.5
+  YLookLimit: {x: -80, y: 80}
+  InvertLookY: 0
+  InvertLookX: 0
+  Speed: 10
+  GroundAcceleration: 12
+  GroundDeceleration: 10
+  RunningMul: 1.5
+  JumpPower: 3
+  AirControl: 2
+  GravityMul: 5
+  SlideSpeedMul: 4
+  SlideFriction: 1
+  SlideDuration: 0.25
+  SlideHeadDrop: -0.8
+  SlideHeadForward: 0.25
+  SlideHeadSpeed: 9
+  SlideHeadReturnSpeed: 7
+  WallRunDuration: 1000
+  WallRunMinSpeed: 10
+  WallRunGravityMul: 0
+  WallRunSpeedMul: 2
+  WallRunningCooldownTime: 0.25
+  WallDetectionDistance: 1
+  WallJumpForwardBoost: 15
+  WallJumpUpForce: 20
+  WallJumpSideForce: 5
+  WallJumpLockTime: 0
+  HeadBobAmplitudeX: 0.002
+  HeadBobAmplitudeY: 0.002
+  HeadBobFrequency: 8
+  HeadBobRunMultiplier: 1
+  DefaultFOV: 60
+  FOVKickAmount: 55
+  FOVKickSpeed: 10
+  WallRunTiltAngle: 20
+  SlideTiltAngle: -5
+  TiltSpeed: 5
