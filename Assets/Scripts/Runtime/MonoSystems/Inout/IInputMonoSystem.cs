@@ -11,6 +11,7 @@ namespace MJ198.MonoSystems
         public UnityEvent SlideAction { get; }
 
         public bool SprintHeld { get; set; }
+        public bool SlideHeld { get; set; }
         public Vector2 RawMovement { get; }
         public Vector2 RawLook { get; }
     }

@@ -23,6 +23,7 @@ namespace MJ198.MonoSystems
         public UnityEvent SlideAction { get; private set; }
 
         public bool SprintHeld { get; set; }
+        public bool SlideHeld { get; set; }
         public Vector2 RawMovement { get; private set; }
         public Vector2 RawLook { get; private set; }
 
@@ -54,7 +55,13 @@ namespace MJ198.MonoSystems
 
         private void HandleSlideAction(InputAction.CallbackContext e)
         {
+            SlideHeld = true;
             SlideAction.Invoke();
+        }
+
+        private void HandleSlideCanceledAction(InputAction.CallbackContext e)
+        {
+            SlideHeld = false;
         }
 
         private void Awake()
@@ -78,6 +85,7 @@ namespace MJ198.MonoSystems
             _sprintAction.performed     += HandleSprintAction;
             _sprintAction.canceled      += HandleSprintCanceledAction;
             _slideAction.performed      += HandleSlideAction;
+            _slideAction.canceled       += HandleSlideCanceledAction;
         }
 
         private void OnDestroy()

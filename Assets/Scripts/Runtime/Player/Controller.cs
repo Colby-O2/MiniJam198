@@ -35,7 +35,6 @@ namespace MJ198.Player
         private Vector2 _horizontalVelocity;
 
         [Header("Slide")]
-        [SerializeField, ReadOnly] private float _slideTimer;
         [SerializeField, ReadOnly] private Vector3 _slideDirection;
 
         [Header("WallRun")]
@@ -117,15 +116,15 @@ namespace MJ198.Player
 
         private void UpdatePlayerState()
         {
-            if (_state == PlayerState.Sliding) UpdateSliding();
-            else if (_state == PlayerState.WallRunning) UpdateWallRunning();
-            else _state = _controller.isGrounded ? PlayerState.Grounded : PlayerState.Airborne;
+            if (_state != PlayerState.WallRunning && _state != PlayerState.Sliding) _state = _controller.isGrounded ? PlayerState.Grounded : PlayerState.Airborne;
         }
 
         private void UpdateMovement()
         {
             switch (_state)
             {
+                case PlayerState.Sliding: UpdateSliding(); break;
+                case PlayerState.WallRunning: UpdateWallRunning(); break;
                 case PlayerState.Grounded: UpdateGrounded(); break;
                 case PlayerState.Airborne: UpdateAirborne(); break;
             }
@@ -147,7 +146,7 @@ namespace MJ198.Player
             if (_controller.isGrounded)
             {
                 _state = PlayerState.Grounded;
-                _velocity.y = -4f;
+                _velocity.y = -2f;
                 return;
             }
 
@@ -167,9 +166,8 @@ namespace MJ198.Player
 
         private void UpdateSliding()
         {
-            _slideTimer -= Time.deltaTime;
             _slideDirection *= 1f / (1f + _settings.SlideFriction * Time.deltaTime);
-            if (_slideTimer <= 0f || _slideDirection.magnitude < 0.1f || !_controller.isGrounded)
+            if (!_input.SlideHeld || _slideDirection.magnitude < _settings.SlideMinSpeed || !_controller.isGrounded)
             {
                 _state = _controller.isGrounded ? PlayerState.Grounded : PlayerState.Airborne;
                 _slideDirection = Vector3.zero;
@@ -208,7 +206,6 @@ namespace MJ198.Player
         {
             if (CantSlide()) return;
             _state = PlayerState.Sliding;
-            _slideTimer = _settings.SlideDuration;
             Vector3 forward = transform.forward;
             forward.y = 0f;
             forward.Normalize();
