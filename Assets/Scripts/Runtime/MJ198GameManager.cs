@@ -18,6 +18,8 @@ namespace MJ198
         [SerializeField] private AudioMonoSystem _audioSystem;
         [SerializeField] private InputMonoSystem _inputSystem;
         [SerializeField] private GridMonoSystem _gridSystem;
+        [SerializeField] private SpawnerMonoSystem _spawnerSystem;
+
 
 
         public static bool IsPaused = false;
@@ -63,6 +65,7 @@ namespace MJ198
             AddMonoSystem<AudioMonoSystem, IAudioMonoSystem>(_audioSystem);
             AddMonoSystem<InputMonoSystem, IInputMonoSystem>(_inputSystem);
             AddMonoSystem<GridMonoSystem, IGridMonoSystem>(_gridSystem);
+            AddMonoSystem<SpawnerMonoSystem, ISpawnerMonoSystem>(_spawnerSystem);
         }
 
         public override string GetApplicationName()
