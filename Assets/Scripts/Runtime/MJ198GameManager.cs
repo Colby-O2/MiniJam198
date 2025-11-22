@@ -17,6 +17,7 @@ namespace MJ198
         [SerializeField] private AnimationMonoSystem _animSystem;
         [SerializeField] private AudioMonoSystem _audioSystem;
         [SerializeField] private InputMonoSystem _inputSystem;
+        [SerializeField] private GridMonoSystem _gridSystem;
 
 
         public static bool IsPaused = false;
@@ -61,6 +62,7 @@ namespace MJ198
             AddMonoSystem<AnimationMonoSystem, IAnimationMonoSystem>(_animSystem);
             AddMonoSystem<AudioMonoSystem, IAudioMonoSystem>(_audioSystem);
             AddMonoSystem<InputMonoSystem, IInputMonoSystem>(_inputSystem);
+            AddMonoSystem<GridMonoSystem, IGridMonoSystem>(_gridSystem);
         }
 
         public override string GetApplicationName()
