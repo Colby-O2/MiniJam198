@@ -43,6 +43,7 @@ namespace MJ198.Player
         [SerializeField, ReadOnly] private Vector3 _slideDirection;
 
         [Header("WallRun")]
+        [SerializeField, ReadOnly] private float _wallRunDirectionSign;
         [SerializeField, ReadOnly] private float _wallRunCooldown;
         [SerializeField, ReadOnly] private Vector3 _wallNormal;
         [SerializeField, ReadOnly] private float _wallRunTimer;
@@ -218,12 +219,21 @@ namespace MJ198.Player
             if (_wallRunTimer <= 0 || !CheckForWall(out var normal) || RawMovementDirection().magnitude == 0.0f)
             {
                 _state = PlayerState.Airborne;
+                if (RawMovementDirection().magnitude != 0.0f) WallJump();
                 _wallRunCooldown = _settings.WallRunningCooldownTime;
                 return;
             }
 
-            _velocity.x = _wallForward.x * Speed * _settings.WallRunSpeedMul;
-            _velocity.z = _wallForward.z * Speed * _settings.WallRunSpeedMul;
+            _wallNormal = Vector3.Lerp(_wallNormal, normal, _settings.WallNormalLerpSpeed * Time.deltaTime);
+
+            Vector3 tangent = Vector3.Cross(Vector3.up, _wallNormal).normalized;
+            _wallForward = tangent * _wallRunDirectionSign;
+
+            Vector3 move = _wallForward * Speed * _settings.WallRunSpeedMul;
+            _velocity.x = move.x;
+            _velocity.z = move.z;
+
+            _velocity += _settings.WallStickForce * Time.deltaTime * -_wallNormal;
         }
 
         private void UpdateGrappling()
@@ -297,34 +307,54 @@ namespace MJ198.Player
             _justWallJumped = true;
             _wallJumpCooldown = _settings.WallJumpLockTime;
             _state = PlayerState.Airborne;
+            Vector3 forwardComponent = (Mathf.Abs(Vector3.Dot(RawMovementDirection(), _wallForward)) < 0.2f) ? _wallForward : _wallNormal;
             _velocity += _wallNormal * _settings.WallJumpSideForce +
                         Vector3.up * _settings.WallJumpUpForce +
-                        ((Mathf.Abs(Vector3.Dot(RawMovementDirection(), _wallForward)) < 0.2f) ? _wallForward : _wallNormal) * _settings.WallJumpForwardBoost;
+                        forwardComponent * _settings.WallJumpForwardBoost;
             _horizontalVelocity = new Vector2(_velocity.x, _velocity.z);
             _wallRunCooldown = _settings.WallRunningCooldownTime;
         }
 
         private void StartWallRun(Vector3 normal)
         {
-            if (_wallRunCooldown > 0f || _velocity.SetY(0f).magnitude < _settings.WallRunMinSpeed) return;
+            if (_wallRunCooldown > 0f || (_velocity.SetY(0f).magnitude < _settings.WallRunMinSpeed && _state != PlayerState.Grappling)) return;
+
             _state = PlayerState.WallRunning;
             _wallNormal = normal;
             _wallRunTimer = _settings.WallRunDuration;
             _velocity.y = 0f;
-            _wallForward = Vector3.Cross(_wallNormal, Vector3.up);
-            if (Vector3.Dot(_wallForward, transform.forward) < 0) _wallForward = -_wallForward;
+
+            Vector3 tangent = Vector3.Cross(Vector3.up, _wallNormal).normalized; 
+            Vector3 inputDir = new Vector3(_inputMove.x, 0f, _inputMove.y);
+            _wallRunDirectionSign = Vector3.Dot(tangent, transform.TransformDirection(inputDir)) >= 0f ? 1f : -1f;
         }
 
         private bool CheckForWall(out Vector3 normal)
         {
             normal = Vector3.zero;
             Vector3 origin = transform.position + Vector3.up * (_controller.height * 0.5f);
-            Collider[] hits = Physics.OverlapSphere(origin, _settings.WallDetectionDistance, ~LayerMask.GetMask("Player"));
+            Collider[] hits = Physics.OverlapSphere(origin, _settings.WallDetectionDistance, _settings.WallLayerMask);
             if (hits.Length > 0)
             {
-                Collider hit = hits[0];
-                normal = (transform.position - hit.ClosestPoint(transform.position)).normalized;
-                return true;
+                float bestDist = float.MaxValue;
+                Collider best = null;
+                Vector3 bestClosest = Vector3.zero;
+                foreach (var h in hits)
+                {
+                    Vector3 closest = h.ClosestPoint(origin);
+                    float d = (closest - origin).sqrMagnitude;
+                    if (d < bestDist)
+                    {
+                        bestDist = d;
+                        best = h;
+                        bestClosest = closest;
+                    }
+                }
+                if (best != null)
+                {
+                    normal = (origin - bestClosest).normalized;
+                    return true;
+                }
             }
 
             return false;
@@ -332,8 +362,7 @@ namespace MJ198.Player
 
         private bool ValidWallRunAngle(Vector3 normal)
         {
-            Vector3 f = Vector3.Cross(normal, Vector3.up);
-            return Mathf.Abs(Vector3.Dot(f, transform.forward)) > 0.2f;
+            return Vector3.Dot(transform.forward, -normal) < 0.6f;
         }
 
         private void StartGrapple()
@@ -356,8 +385,8 @@ namespace MJ198.Player
             if (_isGrappling)
             {
                 _grappleLine.enabled = true;
-                _grappleLine.SetPosition(0, _grappleOrigin.position); 
-                _grappleLine.SetPosition(1, _grapplePoint);           
+                _grappleLine.SetPosition(0, _grappleOrigin.position);
+                _grappleLine.SetPosition(1, _grapplePoint);
             }
             else
             {
@@ -370,5 +399,10 @@ namespace MJ198.Player
             _isGrappling = false;
             _state = _controller.isGrounded ? PlayerState.Grounded : PlayerState.Airborne;
         }
+    }
+
+    public static class Vector3Extensions
+    {
+        public static Vector3 SetY(this Vector3 v, float y) { v.y = y; return v; }
     }
 }

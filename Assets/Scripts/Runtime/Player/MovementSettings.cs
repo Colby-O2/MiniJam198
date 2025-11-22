@@ -31,12 +31,15 @@ namespace MJ198.Player
         public float SlideHeadReturnSpeed = 7f;
 
         [Header("Wall Running")]
+        public LayerMask WallLayerMask;
         public float WallRunDuration = 1.5f;
         public float WallRunMinSpeed = 5f;
         public float WallRunGravityMul = 0.3f;
         public float WallRunSpeedMul = 1.2f;
         public float WallRunningCooldownTime = 0.2f;
         public float WallDetectionDistance = 1f;
+        public float WallNormalLerpSpeed = 12f;
+        public float WallStickForce = 25f;
 
         [Header("Grapple")]
         public float GrappleRange = 40f;

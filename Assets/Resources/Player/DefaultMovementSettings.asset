@@ -31,12 +31,17 @@ MonoBehaviour:
   SlideHeadForward: 0.25
   SlideHeadSpeed: 9
   SlideHeadReturnSpeed: 7
+  WallLayerMask:
+    serializedVersion: 2
+    m_Bits: 128
   WallRunDuration: 1000
   WallRunMinSpeed: 10
   WallRunGravityMul: 0
   WallRunSpeedMul: 2
   WallRunningCooldownTime: 0.25
   WallDetectionDistance: 1
+  WallNormalLerpSpeed: 100
+  WallStickForce: 100
   GrappleRange: 40
   GrappleLayerMask:
     serializedVersion: 2
