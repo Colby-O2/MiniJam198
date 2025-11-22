@@ -400,9 +400,4 @@ namespace MJ198.Player
             _state = _controller.isGrounded ? PlayerState.Grounded : PlayerState.Airborne;
         }
     }
-
-    public static class Vector3Extensions
-    {
-        public static Vector3 SetY(this Vector3 v, float y) { v.y = y; return v; }
-    }
 }
