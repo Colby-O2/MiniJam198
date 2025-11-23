@@ -20,7 +20,7 @@ namespace MJ198.Player
         [SerializeField, ReadOnly] int _scoreMultiplier = 1;
         [SerializeField, ReadOnly] private int _currentScore = 0;
 
-        private RaycastHit[] _hits = new RaycastHit[1];
+        private Collider[] _hits = new Collider[10];
 
         private void Awake()
         {
@@ -58,17 +58,16 @@ namespace MJ198.Player
 
         private void CheckTile()
         {
-            int count = Physics.RaycastNonAlloc(
+            int count = Physics.OverlapSphereNonAlloc(
                 transform.position,
-                -transform.up,
-                _hits,
                 _settings.MaxDstToTileForTrigger,
+                _hits,
                 _settings.TileLayer
             );
 
-            if (count > 0)
+            for (int i = 0; i < count; i++)
             {
-                if(_hits[0].transform.TryGetComponent<Tile>(out Tile tile)) tile.MarkForDecay();
+                if(_hits[i].transform.TryGetComponent<Tile>(out Tile tile)) tile.MarkForDecay();
             }
         }
     }

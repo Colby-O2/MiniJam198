@@ -1,3 +1,4 @@
+using MJ198.Grid;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,10 +7,8 @@ namespace MJ198.MonoSystems
     public class GridMonoSystem : MonoBehaviour, IGridMonoSystem
     {
         [SerializeField] private float _tileSize;
-
         [SerializeField] private GameObject hexTilePrefab;
         [SerializeField] private int gridRadius = 10;
-        [SerializeField] private float hexSize = 1f;
 
         private void Start()
         {

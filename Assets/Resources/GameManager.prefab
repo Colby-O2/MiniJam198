@@ -457,6 +457,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MJ198.MonoSystems.SpawnerMonoSystem
   _enemyRadiusWhenSpawning: 1
   _maxEnemiesAtOnce: 8
+  _startSpawnTime: 5
 --- !u!1 &5976171741833081302
 GameObject:
   m_ObjectHideFlags: 0

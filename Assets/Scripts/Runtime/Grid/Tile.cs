@@ -30,35 +30,73 @@ namespace MJ198.Grid
         [SerializeField, ReadOnly] private Vector3 _startPos;
         [SerializeField, ReadOnly] private Quaternion _startRot;
 
+        private float _decayStartTime;
+        private float _fallStartTime;
+
         private void Awake()
         {
             _baseColor = _renderer.materials[_materialIdx].color;
-
             _startRot = transform.rotation;
             _startPos = transform.position;
         }
 
+        private void OnEnable()
+        {
+            if (_markedForDecay && !_markedForFall)
+            {
+                _timer = Time.time - _decayStartTime;
+                UpdateDecay(_timer);
+            }
+            else if (_markedForFall)
+            {
+                _timer = Time.time - _fallStartTime;
+                UpdateFall(_timer);
+            }
+        }
+
         private void Update()
         {
-            SetTileDecay();
-            HandleFall();
+            if (_markedForDecay && !_markedForFall)
+            {
+                _timer += Time.deltaTime;
+                UpdateDecay(_timer);
+            }
+
+            if (_markedForFall)
+            {
+                _timer += Time.deltaTime;
+                UpdateFall(_timer);
+            }
         }
 
         public void MarkForDecay()
         {
+            if (_markedForDecay) return;
             _markedForDecay = true;
-
-
+            _decayStartTime = Time.time;
         }
 
-        private void HandleFall()
+        private void UpdateDecay(float timer)
         {
-            if (!_markedForFall) return;
+            _renderer.materials[_materialIdx].color = Color.Lerp(
+                _baseColor,
+                _decayColor,
+                _startColorPercent + (timer / ((1f / _startColorPercent) * _decayTime))
+            );
 
-            _timer += Time.deltaTime;
-            transform.position = transform.position.SetY(_startPos.y - _fallDst * _timer / _fallTime);
+            if (timer >= _decayTime)
+            {
+                _timer = 0f;
+                _markedForFall = true;
+                _fallStartTime = Time.time;
+            }
+        }
 
-            if (_timer  > _fallTime)
+        private void UpdateFall(float timer)
+        {
+            transform.position = transform.position.SetY(_startPos.y - _fallDst * timer / _fallTime);
+
+            if (timer >= _fallTime)
             {
                 gameObject.SetActive(false);
             }
@@ -72,21 +110,6 @@ namespace MJ198.Grid
             _renderer.materials[_materialIdx].color = _baseColor;
             _markedForDecay = false;
             _markedForFall = false;
-        }
-
-        private void SetTileDecay()
-        {
-            if (!_markedForDecay || _markedForFall) return;
-
-            _timer += Time.deltaTime;
-
-            _renderer.materials[_materialIdx].color = Color.Lerp(_baseColor, _decayColor, _startColorPercent + (_timer / ((1f / _startColorPercent) * _decayTime)));
-
-            if (_timer > _decayTime)
-            {
-                _timer = 0f;
-                _markedForFall = true;
-            }
         }
     }
 }

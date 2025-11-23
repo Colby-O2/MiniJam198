@@ -1725,66 +1725,17 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1783614426}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!1 &2054195826 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2748989465789962725, guid: 0cc368709ed9f5d4d90e06902ab89ee7, type: 3}
-  m_PrefabInstance: {fileID: 3921394799357437830}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &2054195829 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 399415873776313589, guid: 0cc368709ed9f5d4d90e06902ab89ee7, type: 3}
   m_PrefabInstance: {fileID: 3921394799357437830}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2054195826}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1abc2e8e24977e34bba93367a4a4dc11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MJ198.Player.Controller
---- !u!114 &2054195836
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2054195826}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d462d4b64067b4a4ea31d09a42981b3d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _maxHealth: 100
-  _currentHealth: 0
-  OnDeath:
-    m_PersistentCalls:
-      m_Calls: []
---- !u!54 &2054195837
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2054195826}
-  serializedVersion: 5
-  m_Mass: 1
-  m_LinearDamping: 0
-  m_AngularDamping: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 1
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!1001 &3921394799357437830
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1793,10 +1744,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2103762062949986049, guid: 0cc368709ed9f5d4d90e06902ab89ee7, type: 3}
-      propertyPath: _controller
-      value: 
-      objectReference: {fileID: 2054195829}
     - target: {fileID: 2748989465789962725, guid: 0cc368709ed9f5d4d90e06902ab89ee7, type: 3}
       propertyPath: m_Name
       value: Player
@@ -1844,13 +1791,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 2748989465789962725, guid: 0cc368709ed9f5d4d90e06902ab89ee7, type: 3}
-      insertIndex: 6
-      addedObject: {fileID: 2054195836}
-    - targetCorrespondingSourceObject: {fileID: 2748989465789962725, guid: 0cc368709ed9f5d4d90e06902ab89ee7, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2054195837}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0cc368709ed9f5d4d90e06902ab89ee7, type: 3}
 --- !u!1001 &7219900418554380376
 PrefabInstance:
