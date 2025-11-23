@@ -60,6 +60,9 @@ namespace MJ198.Player
         [SerializeField] private LineRenderer _grappleLine;
         [SerializeField] private Transform _grappleOrigin;
 
+        [Header("Grapple Indicator")]
+        private GameObject _grappleIconInstance;
+
         private IInputMonoSystem _input;
 
         public bool IsSliding() => _state == PlayerState.Sliding;
@@ -89,6 +92,12 @@ namespace MJ198.Player
             {
                 _grappleLine.positionCount = 2;
                 _grappleLine.enabled = false;
+            }
+
+            if (_settings.GrappleIconPrefab != null)
+            {
+                _grappleIconInstance = Instantiate(_settings.GrappleIconPrefab);
+                _grappleIconInstance.SetActive(false); 
             }
         }
 
@@ -132,6 +141,7 @@ namespace MJ198.Player
             ApplyGravity();
             MoveController();
             UpdateGrappleLine();
+            UpdateGrappleIcon();
         }
 
         private void LateUpdate()
@@ -420,6 +430,34 @@ namespace MJ198.Player
             else
             {
                 _grappleLine.enabled = false;
+            }
+        }
+
+        private void UpdateGrappleIcon()
+        {
+            if (_grappleIconInstance == null) return;
+
+            if (_state == PlayerState.WallRunning || _state == PlayerState.Grappling)
+            {
+                if (_grappleIconInstance.activeSelf) _grappleIconInstance.SetActive(false);
+                return;
+            }
+
+            Transform cam = Camera.main.transform;
+            Ray ray = new Ray(cam.position, cam.forward);
+            RaycastHit hit;
+
+            bool foundGrapple = Physics.Raycast(ray, out hit, _settings.GrappleRange, _settings.GrappleLayerMask) ||
+                                 Physics.SphereCast(ray, _settings.GrappleSphereCastRadius, out hit, _settings.GrappleRange, _settings.GrappleLayerMask);
+
+            if (foundGrapple)
+            {
+                if (!_grappleIconInstance.activeSelf) _grappleIconInstance.SetActive(true);
+                _grappleIconInstance.transform.position = hit.point;
+            }
+            else
+            {
+                if (_grappleIconInstance.activeSelf) _grappleIconInstance.SetActive(false);
             }
         }
 

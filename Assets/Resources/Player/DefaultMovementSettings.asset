@@ -41,7 +41,7 @@ MonoBehaviour:
   WallRunningCooldownTime: 0.25
   WallDetectionDistance: 1
   WallNormalLerpSpeed: 100
-  WallStickForce: 100
+  WallStickForce: 500
   GrappleRange: 40
   GrappleLayerMask:
     serializedVersion: 2
@@ -51,6 +51,7 @@ MonoBehaviour:
   GrapplePullAcceleration: 70
   GrappleMaxSpeed: 100
   GrappleSphereCastRadius: 2
+  GrappleIconPrefab: {fileID: 160570423304584700, guid: 43a759c560a56f246978270c52c38438, type: 3}
   WallJumpForwardBoost: 15
   WallJumpUpForce: 20
   WallJumpSideForce: 5
@@ -66,4 +67,6 @@ MonoBehaviour:
   SlideTiltAngle: -5
   TiltSpeed: 5
   ShootTime: 0.2
-  BulletVelocity: 55
+  BulletVelocity: 100
+  BulletLifeSpan: 10
+  BulletDamage: 10

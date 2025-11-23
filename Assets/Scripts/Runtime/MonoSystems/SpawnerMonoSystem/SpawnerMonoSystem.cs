@@ -10,6 +10,7 @@ namespace MJ198.MonoSystems
         [SerializeField] private float _enemyRadiusWhenSpawning = 0.5f;
         [SerializeField] private float _maxEnemiesAtOnce = 15;
         [SerializeField] private float _startSpawnTime = 5;
+        [SerializeField] private float _biasStrength = 0.7f;
 
         private List<Enemy.Manager> _enemies = new();
 
@@ -59,10 +60,13 @@ namespace MJ198.MonoSystems
             const int maxTries = 100;
             for (int i = 0; i < maxTries; i++)
             {
-                Vector3 pos = MathExt.RandomPointInBounds(_spawnBounds);
-                if (IsValidLocation(pos, _enemyRadiusWhenSpawning))
+                Vector3 randomPos = MathExt.RandomPointInBounds(_spawnBounds);
+
+                Vector3 biasedPos = Vector3.Lerp(_player.transform.position, randomPos, _biasStrength);
+
+                if (IsValidLocation(biasedPos, _enemyRadiusWhenSpawning))
                 {
-                    return pos;
+                    return biasedPos;
                 }
             }
 

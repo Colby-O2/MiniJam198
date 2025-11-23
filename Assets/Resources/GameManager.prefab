@@ -407,7 +407,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: PlazmaGames.Runtime::PlazmaGames.UI.UIMonoSystem
   _preserveUIAcrossScenes: 1
-  _startingView: 
+  _startingView: MJ198.GameView, Assembly-CSharp
   _views: []
   _currentView: {fileID: 0}
   _hasInitialized: 0
@@ -505,7 +505,6 @@ MonoBehaviour:
   _tileSize: 1
   hexTilePrefab: {fileID: 7802700192306267662, guid: 67bd84c3e9282b945b9ff3e208a0ac6d, type: 3}
   gridRadius: 20
-  hexSize: 1
 --- !u!1 &6270617075290585661
 GameObject:
   m_ObjectHideFlags: 0

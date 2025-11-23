@@ -9,6 +9,7 @@ namespace MJ198.Grid
     public class Tile : MonoBehaviour
     {
         [SerializeField] private MeshRenderer _renderer;
+        [SerializeField] private Collider _collider;
 
         [Header("Decay Settings")]
         [SerializeField] private float _decayTime;
@@ -21,10 +22,14 @@ namespace MJ198.Grid
 
         [Header("Fall Settings")]
         [SerializeField] private float _fallTime = 5f;
+        [SerializeField] private float _downTime = 19f;
+        [SerializeField] private float _returnTime = 1f;
         [SerializeField] private float _fallDst = 100f;
 
         [SerializeField, ReadOnly] private bool _markedForFall;
         [SerializeField, ReadOnly] private bool _markedForDecay;
+        [SerializeField, ReadOnly] private bool _markedForWait;
+        [SerializeField, ReadOnly] private bool _markedForReturn;
         [SerializeField, ReadOnly] private float _timer;
 
         [SerializeField, ReadOnly] private Vector3 _startPos;
@@ -32,9 +37,11 @@ namespace MJ198.Grid
 
         private float _decayStartTime;
         private float _fallStartTime;
+        private float _returnStartTIme;
 
         private void Awake()
         {
+            if (!_collider) _collider = GetComponent<Collider>();
             _baseColor = _renderer.materials[_materialIdx].color;
             _startRot = transform.rotation;
             _startPos = transform.position;
@@ -47,10 +54,15 @@ namespace MJ198.Grid
                 _timer = Time.time - _decayStartTime;
                 UpdateDecay(_timer);
             }
-            else if (_markedForFall)
+            else if (_markedForFall && !_markedForReturn)
             {
                 _timer = Time.time - _fallStartTime;
                 UpdateFall(_timer);
+            }
+            else if (_markedForReturn)
+            {
+                _timer += Time.deltaTime;
+                UpdateReturn(_timer);
             }
         }
 
@@ -61,11 +73,15 @@ namespace MJ198.Grid
                 _timer += Time.deltaTime;
                 UpdateDecay(_timer);
             }
-
-            if (_markedForFall)
+            else if (_markedForFall && !_markedForReturn)
             {
                 _timer += Time.deltaTime;
                 UpdateFall(_timer);
+            }
+            else if (_markedForReturn)
+            {
+                _timer += Time.deltaTime;
+                UpdateReturn(_timer);
             }
         }
 
@@ -94,22 +110,45 @@ namespace MJ198.Grid
 
         private void UpdateFall(float timer)
         {
+
+            if (_collider.enabled) _collider.enabled = false;
             transform.position = transform.position.SetY(_startPos.y - _fallDst * timer / _fallTime);
 
             if (timer >= _fallTime)
             {
-                gameObject.SetActive(false);
+                _timer = 0;
+                _markedForReturn = true;
+                _renderer.enabled = false;
+            }
+        }
+
+        private void UpdateReturn(float timer)
+        {
+            if (timer < _downTime) return;
+
+            if (!_renderer.enabled) _renderer.enabled = true;
+            transform.position = transform.position.SetY(_startPos.y - _fallDst + _fallDst * (timer - _downTime) / _returnTime);
+
+            if (timer >= _returnTime + _downTime)
+            {
+                ResetTile();
             }
         }
 
         private void ResetTile()
         {
             _timer = 0;
+            _collider.enabled = true;
+            _renderer.enabled = true;
             transform.position = _startPos;
             transform.rotation = _startRot;
             _renderer.materials[_materialIdx].color = _baseColor;
             _markedForDecay = false;
             _markedForFall = false;
+            _markedForReturn = false;
+            _decayStartTime = 0f;
+            _fallStartTime = 0f;
+            _returnStartTIme = 0f;
         }
     }
 }

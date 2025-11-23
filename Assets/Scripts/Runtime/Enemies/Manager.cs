@@ -2,6 +2,7 @@ using PlazmaGames.Attribute;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 namespace MJ198.Enemy
 {
@@ -32,6 +33,11 @@ namespace MJ198.Enemy
 
         private void Update()
         {
+            if (!_player)
+            {
+                Destroy(gameObject);
+                return;
+            }
             if (GetDistanceToPlayer() < _settings.ShootingDst) TryShoot();
         }
 
@@ -53,6 +59,7 @@ namespace MJ198.Enemy
             Bullet b = GameObject.Instantiate(_settings.BulletPrefab, transform.position + _settings.BulletSpawnDst * pos, dir).GetComponent<Bullet>();
             b.Damage = _settings.Damage;
             b.Velocity = _settings.BulletVelocity;
+            b.LifeSpan = _settings.LifeSpan;
         }
     }
 }

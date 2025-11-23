@@ -9,13 +9,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9ea2c8216a334c443905584a12e3bf60, type: 3}
+  m_Script: {fileID: 11500000, guid: a7bab5ac25f2bce469f77ac7122ea3eb, type: 3}
   m_Name: DefaultEnemyMovementSettings
   m_EditorClassIdentifier: 
   BulletPrefab: {fileID: 7131247633242150663, guid: 8249acfbb5d4644adb78b7ef9a24d745, type: 3}
   BulletSpawnDst: 2.5
-  BulletVelocity: 50
-  ShootingDst: 10000
-  FireRate: 0.5
+  LifeSpan: 1
+  BulletVelocity: 100
+  ShootingDst: 1000
+  FireRate: 0.1
   Damage: 5
-  Score: 0
+  Score: 1

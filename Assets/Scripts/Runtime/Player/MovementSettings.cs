@@ -50,6 +50,9 @@ namespace MJ198.Player
         public float GrappleMaxSpeed = 35f;
         public float GrappleSphereCastRadius = 0.5f;
 
+        [Header("Grapple Indicator")]
+        public GameObject GrappleIconPrefab;
+
         [Header("Wall Jump")]
         public float WallJumpForwardBoost = 3f;
         public float WallJumpUpForce = 8f;

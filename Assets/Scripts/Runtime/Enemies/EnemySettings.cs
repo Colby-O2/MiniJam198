@@ -8,6 +8,7 @@ namespace MJ198.Enemy
         [Header("Shooting")]
         public GameObject BulletPrefab;
         public float BulletSpawnDst = 1f;
+        public float LifeSpan = 1f;
         public float BulletVelocity;
         public float ShootingDst;
         public float FireRate;

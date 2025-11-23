@@ -1,8 +1,11 @@
 using MJ198.Grid;
 using MJ198.Player;
 using PlazmaGames.Attribute;
+using PlazmaGames.Core;
+using PlazmaGames.UI;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace MJ198.Player
 {
@@ -20,6 +23,8 @@ namespace MJ198.Player
         [SerializeField, ReadOnly] int _scoreMultiplier = 1;
         [SerializeField, ReadOnly] private int _currentScore = 0;
 
+        private GameView _ui;
+
         private Collider[] _hits = new Collider[10];
 
         private void Awake()
@@ -31,19 +36,32 @@ namespace MJ198.Player
             ResetScore();
         }
 
-        private void OnDeath()
+        private void Start()
         {
-            Debug.Log("You Died.");
+            _ui = GameManager.GetMonoSystem<IUIMonoSystem>().GetView<GameView>();
         }
 
         private void Update()
         {
             _scoreMultiplier = Mathf.Clamp(1 + Mathf.FloorToInt(_controller.GetTimeOffGround() / _timeForScoreMultiplier), 1, _maxScoreMultiplier);
+            UpdateUI();
         }
 
         private void FixedUpdate()
         {
             if (_controller.State == Controller.PlayerState.Grounded || _controller.State == Controller.PlayerState.Sliding) CheckTile();
+        }
+
+        private void OnDeath()
+        {
+            Debug.Log("You Died.");
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
+
+        private void UpdateUI()
+        {
+            _ui.SetHealth(_healthTaker.GetCurrentHealth(), _healthTaker.GetMaxHealth());
+            _ui.SetScore(_currentScore, _scoreMultiplier);
         }
 
         public void AddScore(int amount)
