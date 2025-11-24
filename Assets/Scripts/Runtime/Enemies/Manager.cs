@@ -12,6 +12,7 @@ namespace MJ198.Enemy
         
         [SerializeField] private EnemySettings _settings;
         [SerializeField] private HealthTaker _healthTaker;
+        [SerializeField] private Transform _bulletSpawn;
 
         [SerializeField] private Player.Controller _player;
 
@@ -38,7 +39,16 @@ namespace MJ198.Enemy
                 Destroy(gameObject);
                 return;
             }
+
+            LookAtPlayer();
+
             if (GetDistanceToPlayer() < _settings.ShootingDst) TryShoot();
+        }
+
+        private void LookAtPlayer()
+        {
+            Vector3 targetPos = _player.transform.position;
+            transform.LookAt(targetPos);
         }
 
         private float GetDistanceToPlayer()
@@ -53,13 +63,15 @@ namespace MJ198.Enemy
 
         private void TryShoot()
         {
+            if (!_player.gameObject.activeSelf) return;
+
             if (!_lastShot.Try(_settings.FireRate)) return;
             Quaternion dir = GetBulletDirection();
-            Vector3 pos = dir * Vector3.forward;
-            Bullet b = GameObject.Instantiate(_settings.BulletPrefab, transform.position + _settings.BulletSpawnDst * pos, dir).GetComponent<Bullet>();
+            Bullet b = GameObject.Instantiate(_settings.BulletPrefab, _bulletSpawn.position, dir).GetComponent<Bullet>();
             b.Damage = _settings.Damage;
             b.Velocity = _settings.BulletVelocity;
             b.LifeSpan = _settings.LifeSpan;
+            b.IgnoreTag = _settings.IgnoreTag;
         }
     }
 }

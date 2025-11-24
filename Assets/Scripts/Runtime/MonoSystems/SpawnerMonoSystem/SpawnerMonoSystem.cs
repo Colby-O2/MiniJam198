@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using MJ198.Math;
+using MJ198.Player;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -10,7 +11,7 @@ namespace MJ198.MonoSystems
         [SerializeField] private float _enemyRadiusWhenSpawning = 0.5f;
         [SerializeField] private float _maxEnemiesAtOnce = 15;
         [SerializeField] private float _startSpawnTime = 5;
-        [SerializeField] private float _biasStrength = 0.7f;
+        [SerializeField] private float _biasStrength = 0.3f;
 
         private List<Enemy.Manager> _enemies = new();
 
@@ -37,6 +38,16 @@ namespace MJ198.MonoSystems
         private void Update()
         {
             if (_spawnTrigger.Try(_currentSpawnTime)) TrySpawn();
+        }
+
+        public void SetPlayer(Player.Controller player)
+        {
+            _player = player;
+        }
+
+        public void Restart()
+        {
+            _enemies.Clear();
         }
 
         private void TrySpawn()

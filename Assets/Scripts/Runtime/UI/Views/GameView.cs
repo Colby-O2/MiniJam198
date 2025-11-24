@@ -26,5 +26,11 @@ namespace MJ198
         {
 
         }
+
+        public override void Show()
+        {
+            base.Show();
+            MJ198GameManager.HideCursor();
+        }
     }
 }

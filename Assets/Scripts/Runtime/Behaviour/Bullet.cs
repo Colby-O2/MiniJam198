@@ -8,6 +8,7 @@ namespace MJ198
         public float Velocity = 20;
         public float Damage = 10f;
         public float LifeSpan = 1f;
+        public string IgnoreTag;
 
         [SerializeField] private float _timer;
 
@@ -22,12 +23,12 @@ namespace MJ198
 
         public void OnTriggerEnter(Collider other)
         {
-            if (other.TryGetComponent<HealthTaker>(out HealthTaker health))
+            if (!other.CompareTag(IgnoreTag) && other.TryGetComponent<HealthTaker>(out HealthTaker health))
             {
                 health.TakeHealth(Damage);
             }
 
-            Destroy(gameObject);
+            if (!other.CompareTag("Bullet")) Destroy(gameObject);
         }
     }
 }

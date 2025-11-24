@@ -256,7 +256,6 @@ namespace MJ198.Player
             if (_wallRunTimer <= 0 || !CheckForWall(out var normal) || RawMovementDirection().magnitude == 0.0f)
             {
                 _state = PlayerState.Airborne;
-                if (RawMovementDirection().magnitude != 0.0f) WallJump();
                 _wallRunCooldown = _settings.WallRunningCooldownTime;
                 return;
             }
@@ -320,8 +319,37 @@ namespace MJ198.Player
 
         private void MoveController()
         {
+            if (_velocity.y > 0f && _controller.collisionFlags.HasFlag(CollisionFlags.Above))
+            {
+                _velocity.y = -2f;
+            }
+
             Vector3 move = _state == PlayerState.Sliding ? _slideDirection + Vector3.up * _velocity.y : _velocity;
+
             _controller.Move(move * Time.deltaTime);
+
+            if (_controller.isGrounded == false)
+            {
+                Collider[] overlaps = Physics.OverlapCapsule(
+                    _controller.bounds.center + Vector3.up * (_controller.height / 2f - _controller.radius),
+                    _controller.bounds.center - Vector3.up * (_controller.height / 2f - _controller.radius),
+                    _controller.radius,
+                    ~0
+                );
+
+                foreach (Collider c in overlaps)
+                {
+                    if (c.attachedRigidbody) continue;
+                    if (c.isTrigger) continue;
+
+                    Vector3 dir = _controller.bounds.center - c.ClosestPoint(_controller.bounds.center);
+                    if (dir.sqrMagnitude > 0f)
+                    {
+                        Debug.Log("Pusing!");
+                        _controller.Move(dir.normalized * _settings.ColliderPushForce);
+                    }
+                }
+            }
         }
 
         private void StartSlide()
@@ -391,7 +419,8 @@ namespace MJ198.Player
                 if (best != null)
                 {
                     normal = (origin - bestClosest).normalized;
-                    return true;
+                    float verticalDot = Vector3.Dot(normal, Vector3.up);
+                    return !(verticalDot > 0.2f || verticalDot < -0.2f);
                 }
             }
 
@@ -459,6 +488,16 @@ namespace MJ198.Player
             {
                 if (_grappleIconInstance.activeSelf) _grappleIconInstance.SetActive(false);
             }
+        }
+
+        public CharacterController GetController() => _controller;
+
+        public void Restart()
+        {
+            _velocity = Vector3.zero;
+            _horizontalVelocity = Vector3.zero;
+
+            if (_isGrappling) StopGrapple();
         }
 
         private void StopGrapple()

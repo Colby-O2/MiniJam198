@@ -1,4 +1,5 @@
 using MJ198.Grid;
+using MJ198.MonoSystems;
 using MJ198.Player;
 using PlazmaGames.Attribute;
 using PlazmaGames.Core;
@@ -25,6 +26,8 @@ namespace MJ198.Player
 
         private GameView _ui;
 
+        private Transform _spawnLoc;
+
         private Collider[] _hits = new Collider[10];
 
         private void Awake()
@@ -32,8 +35,10 @@ namespace MJ198.Player
             if (!_controller)  _controller = GetComponent<Controller>();
             if (!_healthTaker) _healthTaker = GetComponent<HealthTaker>();
 
+            _spawnLoc = GameObject.FindWithTag("SpawnLoc").transform;
+
             _healthTaker.OnDeath.AddListener(OnDeath);
-            ResetScore();
+            Restart();
         }
 
         private void Start()
@@ -52,10 +57,24 @@ namespace MJ198.Player
             if (_controller.State == Controller.PlayerState.Grounded || _controller.State == Controller.PlayerState.Sliding) CheckTile();
         }
 
+        public void Restart()
+        {
+            _controller.Restart();
+            _controller.GetController().enabled = false;
+            _controller.enabled = false;
+            transform.position = _spawnLoc.position;
+            transform.rotation = _spawnLoc.rotation;
+            _controller.enabled = true;
+            _controller.GetController().enabled = true;
+            GameManager.GetMonoSystem<ISpawnerMonoSystem>().SetPlayer(_controller);
+            _healthTaker.ResetHealth();
+            ResetScore();
+        }
+
         private void OnDeath()
         {
             Debug.Log("You Died.");
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            MJ198GameManager.Restart();
         }
 
         private void UpdateUI()
@@ -72,6 +91,7 @@ namespace MJ198.Player
         public void ResetScore()
         {
             _currentScore = 0;
+            _scoreMultiplier = 1;
         }
 
         private void CheckTile()

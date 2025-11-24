@@ -31,14 +31,32 @@ namespace MJ198.Player
             _input = GameManager.GetMonoSystem<IInputMonoSystem>();
             
         }
-        
+
         private void TryShoot()
         {
             if (!_lastShot.Try(_settings.ShootTime)) return;
-            Bullet b = GameObject.Instantiate(_bulletPrefab, _shootLocation.position, _head.rotation).GetComponent<Bullet>();
+
+            Ray ray = new Ray(_head.position, _head.forward);
+
+            Vector3 targetPoint;
+            if (Physics.Raycast(ray, out RaycastHit hit, 100f)) 
+            {
+                targetPoint = hit.point;
+            }
+            else
+            {
+                targetPoint = ray.origin + ray.direction * 100f; 
+            }
+
+            Vector3 bulletDirection = (targetPoint - _shootLocation.position).normalized;
+
+            Bullet b = Instantiate(_bulletPrefab, _shootLocation.position, Quaternion.LookRotation(bulletDirection))
+                             .GetComponent<Bullet>();
+
             b.Velocity = _settings.BulletVelocity;
             b.LifeSpan = _settings.BulletLifeSpan;
             b.Damage = _settings.BulletDamage;
+            b.IgnoreTag = _settings.IgnoreTag;
         }
     }
 }

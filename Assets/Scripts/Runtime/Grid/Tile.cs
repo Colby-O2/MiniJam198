@@ -17,8 +17,8 @@ namespace MJ198.Grid
         [Header("Color Settings")]
         [SerializeField] private int _materialIdx;
         [SerializeField] private float _startColorPercent = 0.25f;
-        [SerializeField] private Color _decayColor;
-        [SerializeField, ReadOnly] private Color _baseColor;
+        [SerializeField, ColorUsage(true, true)] private Color _decayColor;
+        [SerializeField, ColorUsage(true, true), ReadOnly] private Color _baseColor = Color.black;
 
         [Header("Fall Settings")]
         [SerializeField] private float _fallTime = 5f;
@@ -42,9 +42,11 @@ namespace MJ198.Grid
         private void Awake()
         {
             if (!_collider) _collider = GetComponent<Collider>();
-            _baseColor = _renderer.materials[_materialIdx].color;
+            _baseColor = Color.black;
             _startRot = transform.rotation;
             _startPos = transform.position;
+
+            _renderer.material.EnableKeyword("_EMISSION");
         }
 
         private void OnEnable()
@@ -94,11 +96,11 @@ namespace MJ198.Grid
 
         private void UpdateDecay(float timer)
         {
-            _renderer.materials[_materialIdx].color = Color.Lerp(
+            _renderer.materials[_materialIdx].SetColor("_EmissionColor", Color.Lerp(
                 _baseColor,
                 _decayColor,
                 _startColorPercent + (timer / ((1f / _startColorPercent) * _decayTime))
-            );
+            ));
 
             if (timer >= _decayTime)
             {
@@ -135,14 +137,14 @@ namespace MJ198.Grid
             }
         }
 
-        private void ResetTile()
+        public void ResetTile()
         {
             _timer = 0;
             _collider.enabled = true;
             _renderer.enabled = true;
             transform.position = _startPos;
             transform.rotation = _startRot;
-            _renderer.materials[_materialIdx].color = _baseColor;
+            _renderer.materials[_materialIdx].SetColor("_EmissionColor", _baseColor);
             _markedForDecay = false;
             _markedForFall = false;
             _markedForReturn = false;

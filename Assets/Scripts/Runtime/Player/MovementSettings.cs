@@ -19,6 +19,7 @@ namespace MJ198.Player
         public float JumpPower = 0.2f;
         public float AirControl = 2f;
         public float GravityMul = 1f;
+        public float ColliderPushForce = 0.1f;
 
         [Header("Sliding")]
         public float SlideSpeedMul = 3f;
@@ -80,5 +81,6 @@ namespace MJ198.Player
         public float BulletVelocity = 2.0f;
         public float BulletLifeSpan = 10.0f;
         public float BulletDamage = 10.0f;
+        public string IgnoreTag = "Player";
     }
 }

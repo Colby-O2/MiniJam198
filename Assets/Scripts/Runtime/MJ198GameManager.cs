@@ -1,3 +1,4 @@
+using MJ198.Grid;
 using MJ198.MonoSystems;
 using PlazmaGames.Animation;
 using PlazmaGames.Audio;
@@ -102,7 +103,21 @@ namespace MJ198
 
         private void Start()
         {
-            HideCursor();
+            //HideCursor();
+        }
+
+        public static void Restart()
+        {
+            GameManager.GetMonoSystem<ISpawnerMonoSystem>().Restart();
+
+            FindFirstObjectByType<Player.Manager>().Restart();
+            Tile[] tiles = FindObjectsByType<Tile>(FindObjectsSortMode.None);
+            Enemy.Manager[] enemies = FindObjectsByType<Enemy.Manager>(FindObjectsSortMode.None);
+            Bullet[] bullets = FindObjectsByType<Bullet>(FindObjectsSortMode.None);
+
+            foreach (Tile tile in tiles) tile.ResetTile();
+            foreach (Enemy.Manager enemy in enemies) Destroy(enemy.gameObject);
+            foreach (Bullet bullet in bullets) Destroy(bullet.gameObject);
         }
 
         private void OnEnable()

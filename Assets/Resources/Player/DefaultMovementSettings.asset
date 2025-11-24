@@ -23,6 +23,7 @@ MonoBehaviour:
   JumpPower: 3
   AirControl: 2
   GravityMul: 5
+  ColliderPushForce: 0.05
   SlideSpeedMul: 4
   SlideFriction: 1
   SlideMinSpeed: 10
@@ -41,11 +42,11 @@ MonoBehaviour:
   WallRunningCooldownTime: 0.25
   WallDetectionDistance: 1
   WallNormalLerpSpeed: 100
-  WallStickForce: 500
+  WallStickForce: 200
   GrappleRange: 40
   GrappleLayerMask:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 384
   GrappleMinDetachDistance: 3
   GrappleExitBoost: 0
   GrapplePullAcceleration: 70
@@ -61,7 +62,7 @@ MonoBehaviour:
   HeadBobFrequency: 8
   HeadBobRunMultiplier: 1
   DefaultFOV: 60
-  FOVKickAmount: 55
+  FOVKickAmount: 65
   FOVKickSpeed: 10
   WallRunTiltAngle: 20
   SlideTiltAngle: -5
@@ -70,3 +71,4 @@ MonoBehaviour:
   BulletVelocity: 100
   BulletLifeSpan: 10
   BulletDamage: 10
+  IgnoreTag: Pllayer

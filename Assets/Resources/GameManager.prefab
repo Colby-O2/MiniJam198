@@ -182,7 +182,10 @@ MonoBehaviour:
   _musicSound: 1
   _musicSounds: []
   _ambientSounds: []
-  _sfxSounds: []
+  _sfxSounds:
+  - id: 0
+    name: UIClick
+    audio: {fileID: 8300000, guid: 64fb5d5bfbb9d3c4eba7bab5af15fbaa, type: 3}
   _musicSource: {fileID: 5059433927457858495}
   _ambientSource: {fileID: 8740410087052889270}
   _sfxMainSource: {fileID: 5454034789272004605}
@@ -407,7 +410,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: PlazmaGames.Runtime::PlazmaGames.UI.UIMonoSystem
   _preserveUIAcrossScenes: 1
-  _startingView: MJ198.GameView, Assembly-CSharp
+  _startingView: MJ198.UI.MainMenuView, Assembly-CSharp
   _views: []
   _currentView: {fileID: 0}
   _hasInitialized: 0
@@ -457,7 +460,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MJ198.MonoSystems.SpawnerMonoSystem
   _enemyRadiusWhenSpawning: 1
   _maxEnemiesAtOnce: 8
-  _startSpawnTime: 5
+  _startSpawnTime: 1
+  _biasStrength: 0.7
 --- !u!1 &5976171741833081302
 GameObject:
   m_ObjectHideFlags: 0
