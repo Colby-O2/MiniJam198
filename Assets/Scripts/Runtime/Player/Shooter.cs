@@ -1,7 +1,6 @@
 using UnityEngine;
 using MJ198.MonoSystems;
 using PlazmaGames.Core;
-using UnityEditor.Rendering;
 
 namespace MJ198.Player
 {
@@ -11,6 +10,9 @@ namespace MJ198.Player
         [SerializeField] private GameObject _bulletPrefab;
         [SerializeField] private Transform _head;
         [SerializeField] private Transform _shootLocation;
+
+        [SerializeField] private AudioSource _audioSource;
+        [SerializeField] private AudioClip _shootClip;
         
         private IInputMonoSystem _input;
 
@@ -57,6 +59,8 @@ namespace MJ198.Player
             b.LifeSpan = _settings.BulletLifeSpan;
             b.Damage = _settings.BulletDamage;
             b.IgnoreTag = _settings.IgnoreTag;
+
+            if (_audioSource && _shootClip) _audioSource.PlayOneShot(_shootClip);
         }
     }
 }

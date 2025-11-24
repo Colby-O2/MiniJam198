@@ -1,6 +1,7 @@
 using MJ198.Grid;
 using MJ198.MonoSystems;
 using MJ198.Player;
+using MJ198.UI;
 using PlazmaGames.Attribute;
 using PlazmaGames.Core;
 using PlazmaGames.UI;
@@ -71,9 +72,12 @@ namespace MJ198.Player
             ResetScore();
         }
 
-        private void OnDeath()
+        public int GetScore() => _currentScore;
+
+        public void OnDeath()
         {
             Debug.Log("You Died.");
+            GameManager.GetMonoSystem<IUIMonoSystem>().Show<RankingsView>();
             MJ198GameManager.Restart();
         }
 

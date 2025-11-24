@@ -10,6 +10,7 @@ namespace MJ198.Grid
     {
         [SerializeField] private MeshRenderer _renderer;
         [SerializeField] private Collider _collider;
+        [SerializeField] private Rigidbody _rb;
 
         [Header("Decay Settings")]
         [SerializeField] private float _decayTime;
@@ -42,6 +43,7 @@ namespace MJ198.Grid
         private void Awake()
         {
             if (!_collider) _collider = GetComponent<Collider>();
+            if (!_rb) _rb = GetComponent<Rigidbody>();
             _baseColor = Color.black;
             _startRot = transform.rotation;
             _startPos = transform.position;
@@ -85,6 +87,11 @@ namespace MJ198.Grid
                 _timer += Time.deltaTime;
                 UpdateReturn(_timer);
             }
+        }
+
+        public void SetRigidBodyState(bool state)
+        {
+            _rb.isKinematic = state;
         }
 
         public void MarkForDecay()

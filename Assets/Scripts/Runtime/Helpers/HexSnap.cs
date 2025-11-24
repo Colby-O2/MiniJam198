@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿#if UNITY_EDITOR
+using UnityEngine;
 using UnityEditor;
 using MJ198.Math;
 
@@ -93,3 +94,4 @@ namespace MJ198.Helpers
         }
     }
 }
+#endif

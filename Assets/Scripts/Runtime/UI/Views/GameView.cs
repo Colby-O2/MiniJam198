@@ -19,7 +19,7 @@ namespace MJ198
 
         public void SetScore(int score, int scoreMul)
         {
-            _score.text = $"Score: {score}\n{scoreMul}X";
+            _score.text = $"{scoreMul}X\nScore: {score}";
         }
 
         public override void Init()

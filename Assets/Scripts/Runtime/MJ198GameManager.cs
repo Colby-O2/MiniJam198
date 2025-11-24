@@ -1,5 +1,6 @@
 using MJ198.Grid;
 using MJ198.MonoSystems;
+using MJ198.UI;
 using PlazmaGames.Animation;
 using PlazmaGames.Audio;
 using PlazmaGames.Core;
@@ -21,11 +22,12 @@ namespace MJ198
         [SerializeField] private GridMonoSystem _gridSystem;
         [SerializeField] private SpawnerMonoSystem _spawnerSystem;
 
-
+        public static string Username;
 
         public static bool IsPaused = false;
         private static bool _lockMovement = false;
 
+        public static Player.Manager Player;
         public static Preferences Preferences { get => (Instance as MJ198GameManager)._preferences; }
         [SerializeField] private Preferences _preferences;
 
@@ -103,19 +105,27 @@ namespace MJ198
 
         private void Start()
         {
-            //HideCursor();
+           Player = FindFirstObjectByType<Player.Manager>();
+        }
+
+        private static void UpdateScore()
+        {
+            if (!Player) return;
+            GameManager.GetMonoSystem<IUIMonoSystem>().GetView<RankingsView>().SetLeaderboardEntry(MJ198GameManager.Username, Player.GetScore());
         }
 
         public static void Restart()
         {
+            UpdateScore();
+            if (Player) Player.Restart();
+
             GameManager.GetMonoSystem<ISpawnerMonoSystem>().Restart();
 
-            FindFirstObjectByType<Player.Manager>().Restart();
-            Tile[] tiles = FindObjectsByType<Tile>(FindObjectsSortMode.None);
+            GameManager.GetMonoSystem<IGridMonoSystem>().Restart();
+
             Enemy.Manager[] enemies = FindObjectsByType<Enemy.Manager>(FindObjectsSortMode.None);
             Bullet[] bullets = FindObjectsByType<Bullet>(FindObjectsSortMode.None);
 
-            foreach (Tile tile in tiles) tile.ResetTile();
             foreach (Enemy.Manager enemy in enemies) Destroy(enemy.gameObject);
             foreach (Bullet bullet in bullets) Destroy(bullet.gameObject);
         }
@@ -134,7 +144,16 @@ namespace MJ198
 
         public static void QuitGame()
         {
+            UpdateScore();
             Application.Quit();
+        }
+
+        public static void StartGame()
+        {
+            Player.gameObject.SetActive(true);
+            GameManager.GetMonoSystem<IGridMonoSystem>().SetRigidBodyState(true);
+            MJ198GameManager.Restart();
+            GameManager.GetMonoSystem<IUIMonoSystem>().Show<GameView>();
         }
     }
 }

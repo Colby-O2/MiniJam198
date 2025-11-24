@@ -26,6 +26,11 @@ namespace MJ198.Player
         [SerializeField] private MovementSettings _settings;
         [SerializeField] private CharacterController _controller;
 
+        [SerializeField] private AudioSource _as;
+        [SerializeField] private AudioClip _jump;
+        [SerializeField] private AudioClip _dash;
+        [SerializeField] private AudioClip _shoot;
+
         [Header("Flags")]
         [SerializeField, ReadOnly] private bool _isSprinting;
         [SerializeField, ReadOnly] private bool _isGrappling;
@@ -160,12 +165,14 @@ namespace MJ198.Player
         {
             if (_state == PlayerState.WallRunning)
             {
+                if (_as && _jump) _as.PlayOneShot(_jump);
                 WallJump();
                 return;
             }
 
             if (_controller.isGrounded || _state == PlayerState.Sliding)
             {
+                if (_as && _jump) _as.PlayOneShot(_jump);
                 _velocity.y = Mathf.Sqrt(_settings.JumpPower * -3f * Gravity);
                 if (_state == PlayerState.Sliding)
                 {
@@ -355,6 +362,7 @@ namespace MJ198.Player
         private void StartSlide()
         {
             if (CantSlide()) return;
+            if (_as && _dash) _as.PlayOneShot(_dash);
             _startedSlide = true;
             _state = PlayerState.Sliding;
             Vector3 forward = transform.forward;
@@ -440,6 +448,7 @@ namespace MJ198.Player
             if (Physics.Raycast(cam.position, cam.forward, out var hit, _settings.GrappleRange, _settings.GrappleLayerMask) ||
                 Physics.SphereCast(new Ray(cam.position, cam.forward), _settings.GrappleSphereCastRadius, out hit, _settings.GrappleRange, _settings.GrappleLayerMask))
             {
+                if (_as && _shoot) _as.PlayOneShot(_shoot);
                 _isGrappling = true;
                 _grapplePoint = hit.point;
                 _state = PlayerState.Grappling;

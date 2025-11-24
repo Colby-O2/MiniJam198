@@ -28,6 +28,8 @@ namespace MJ198
                 health.TakeHealth(Damage);
             }
 
+            Debug.Log($"Tag {other.tag} Name {other.name}");
+
             if (!other.CompareTag("Bullet")) Destroy(gameObject);
         }
     }

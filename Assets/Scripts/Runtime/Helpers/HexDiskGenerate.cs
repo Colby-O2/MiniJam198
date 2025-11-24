@@ -82,7 +82,7 @@ namespace MJ198.Helpers
                     tile.transform.rotation = Quaternion.identity;
                     tile.name = $"Hex_{q}_{r}";
 #else
-                Instantiate(hexTilePrefab, pos, Quaternion.identity, transform);
+                Instantiate(_hexTilePrefab, pos, Quaternion.identity, transform);
 #endif
                 }
             }

@@ -8,7 +8,7 @@ namespace MJ198
         {
             if (other.CompareTag("Pllayer"))
             {
-                MJ198GameManager.Restart();
+                if (MJ198GameManager.Player) MJ198GameManager.Player.OnDeath();
             }
         }
     }

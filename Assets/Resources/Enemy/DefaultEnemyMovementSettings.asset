@@ -18,5 +18,5 @@ MonoBehaviour:
   IgnoreTag: Enemy
   ShootingDst: 100
   FireRate: 0.5
-  Damage: 0
+  Damage: 5
   Score: 1
